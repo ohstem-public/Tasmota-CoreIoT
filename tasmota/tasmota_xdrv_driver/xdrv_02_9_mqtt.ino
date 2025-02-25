@@ -704,7 +704,7 @@ void MqttDataHandler(char* mqtt_topic, uint8_t* mqtt_data, unsigned int data_len
 //  AddLog(LOG_LEVEL_DEBUG, PSTR(D_LOG_MQTT "BufferSize %d, Topic |%s|, Length %d, data_len %d"), MqttClient.getBufferSize(), mqtt_topic, strlen(mqtt_topic), data_len);
 
   char topic[TOPSZ];
-  printf("Topic received |%s|\n", mqtt_topic);
+  //printf("Topic received |%s|\n", mqtt_topic);
 #ifdef USE_MQTT_AZURE_IOT
   #ifdef USE_AZURE_DIRECT_METHOD 
       String fullTopicString = String(mqtt_topic);
@@ -747,7 +747,7 @@ void MqttDataHandler(char* mqtt_topic, uint8_t* mqtt_data, unsigned int data_len
 #ifdef USE_MQTT_TB_IOT
   String fullTopicString = String(mqtt_topic);
   mqtt_data[data_len] = 0;
-  printf("Full topic '%s' payload '%s'\n", fullTopicString.c_str(), mqtt_data);
+  //printf("Full topic '%s' payload '%s'\n", fullTopicString.c_str(), mqtt_data);
   JsonParser mqttJsonData((char*) mqtt_data);
   JsonParserObject rootObject = mqttJsonData.getRootObject();
   if (!rootObject.isValid()) {
@@ -767,7 +767,7 @@ void MqttDataHandler(char* mqtt_topic, uint8_t* mqtt_data, unsigned int data_len
       topic[0] = '/';
       String methodStr = rootObject.getStr("method", "");
       const char* method = methodStr.c_str();
-      strlcpy(topic+1, method, strlen(method));
+      strlcpy(topic+1, method, strlen(method)+1);
       String mqttDataStr= rootObject.getStr("params", "");
       strncpy(reinterpret_cast<char*>(mqtt_data),mqttDataStr.c_str(),data_len);
       mqtt_data[data_len] = 0;
@@ -790,7 +790,7 @@ void MqttDataHandler(char* mqtt_topic, uint8_t* mqtt_data, unsigned int data_len
       data_len = strlen(attributeValue);
       strncpy(reinterpret_cast<char*>(mqtt_data), attributeValue, data_len);
       mqtt_data[data_len] = 0;
-      printf("Topic name: %s value: %s\n", topic, mqtt_data);
+      //printf("Topic name: %s value: %s\n", topic, mqtt_data);
       break;
     }
   }

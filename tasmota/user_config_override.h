@@ -89,13 +89,6 @@ Examples :
 
 #define USE_MQTT_TB_IOT
 
-// -- Setup your own MQTT settings  ---------------
-#undef  MQTT_STATUS_OFF
-#define MQTT_STATUS_OFF        "0"             // [StateText1] Command or Status result when turned off (needs to be a string like "0" or "Off")
-
-#undef  MQTT_STATUS_ON
-#define MQTT_STATUS_ON         "1"              // [StateText2] Command or Status result when turned on (needs to be a string like "1" or "On")
-
 #ifdef USE_DOMOTICZ
 #undef USE_DOMOTICZ
 #endif
