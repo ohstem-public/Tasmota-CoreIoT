@@ -87,7 +87,7 @@ Examples :
 // !!! Remember that your changes GOES AT THE BOTTOM OF THIS FILE right before the last #endif !!!
 */
 
-#define USE_MQTT_TB_IOT
+//#define USE_MQTT_TB_IOT
 
 #ifdef ESP32
 #ifdef USER_TEMPLATE
@@ -103,5 +103,14 @@ Examples :
 #ifdef USE_TASMOTA_DISCOVERY
 #undef USE_TASMOTA_DISCOVERY
 #endif
+
+// support other sensors
+#define USE_SHT3X       // [I2cDriver15] Enable SHT3x (I2C address 0x44 or 0x45) or SHTC3 (I2C address 0x70) sensor (+0k7 code)
+#define USE_AHT2x       // [I2cDriver43] Enable AHT20/AM2301B instead of AHT1x humidity and temperature sensor (I2C address 0x38) (+0k8 code)
+#define USE_MPR121      // [I2cDriver23] Enable MPR121 controller (I2C addresses 0x5A, 0x5B, 0x5C and 0x5D) in input mode for touch buttons (+1k3 code)
+#define USE_VEML6070    // [I2cDriver12] Enable VEML6070 sensor (I2C addresses 0x38 and 0x39) (+1k5 code)
+#define USE_ADS1115     // [I2cDriver13] Enable ADS1115 16 bit A/D converter (I2C address 0x48, 0x49, 0x4A or 0x4B) based on Adafruit ADS1x15 library (no library needed) (+0k7 code)
+#define USE_INA219      // [I2cDriver14] Enable INA219 (I2C address 0x40, 0x41 0x44 or 0x45) Low voltage and current sensor (+1k code)
+
 
 #endif  // _USER_CONFIG_OVERRIDE_H_
