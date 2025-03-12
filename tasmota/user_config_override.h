@@ -87,14 +87,25 @@ Examples :
 // !!! Remember that your changes GOES AT THE BOTTOM OF THIS FILE right before the last #endif !!!
 */
 
-//#define USE_MQTT_TB_IOT
+// #define USE_MQTT_TB_IOT
 
 #ifdef ESP32
 #ifdef USER_TEMPLATE
 #undef USER_TEMPLATE
 #endif
-#define USER_TEMPLATE          "{\"NAME\":\"Yolo UNO\",\"GPIO\":[32,1,1,1,1,1,1,1,1,1,1,640,608,1,1,1,1,1,1,1,1,1,0,0,0,0,0,1,1,1,1,1,1,1,1376,1,1,224],\"FLAG\":0,\"BASE\":1}" // Yolo UNO template
-#endif  // End ESP32
+#define USER_TEMPLATE "{\"NAME\":\"Yolo UNO\",\"GPIO\":[32,1,1,1,1,1,1,1,1,1,1,640,608,1,1,1,1,1,1,1,1,1,0,0,0,0,0,1,1,1,1,1,1,1,1376,1,1,224],\"FLAG\":0,\"BASE\":1}" // Yolo UNO template
+#endif                                                                                                                                                                 // End ESP32
+
+#ifdef APP_TIMEZONE
+#undef APP_TIMEZONE
+#endif
+#define APP_TIMEZONE 7
+
+// Uncomment below to compile faster with minimum features
+
+#ifdef USE_IMPROV
+#undef USE_IMPROV
+#endif
 
 #ifdef USE_DOMOTICZ
 #undef USE_DOMOTICZ
@@ -104,13 +115,132 @@ Examples :
 #undef USE_TASMOTA_DISCOVERY
 #endif
 
+#ifdef ROTARY_V1
+#undef ROTARY_V1
+#endif
+
+#ifdef USE_SONOFF_RF
+#undef USE_SONOFF_RF
+#endif
+
+#ifdef USE_SONOFF_SC
+#undef USE_SONOFF_SC
+#endif
+
+#ifdef USE_ARMTRONIX_DIMMERS
+#undef USE_ARMTRONIX_DIMMERS
+#endif
+
+#ifdef USE_SONOFF_IFAN
+#undef USE_SONOFF_IFAN
+#endif
+
+#ifdef USE_BUZZER
+#undef USE_BUZZER
+#endif
+
+#ifdef USE_ARILUX_RF
+#undef USE_ARILUX_RF
+#endif
+
+#ifdef USE_DEEPSLEEP
+#undef USE_DEEPSLEEP
+#endif
+
+#ifdef USE_EXS_DIMMER
+#undef USE_EXS_DIMMER
+#endif
+
+#ifdef USE_BERRY
+#undef USE_BERRY
+#endif
+
+#ifdef USE_CSE7761
+#undef USE_CSE7761
+#endif
+
+#ifdef USE_LVGL
+#undef USE_LVGL
+#endif
+
+#ifdef USE_TIMERS
+#undef USE_TIMERS
+#endif
+
+#ifdef USE_RULES
+#undef USE_CUSE_RULESSE7761
+#endif
+
+#ifdef USE_TUYA_MCU
+#undef USE_TUYA_MCU
+#endif
+
+#ifdef USE_PS_16_DZ
+#undef USE_PS_16_DZ
+#endif
+
+#ifdef USE_SHUTTER
+#undef USE_SHUTTER
+#endif
+
+#ifdef USE_SHELLY_DIMMER
+#undef USE_SHELLY_DIMMER
+#endif
+
+#ifdef USE_LIGHT_VIRTUAL_CT
+#undef USEUSE_LIGHT_VIRTUAL_CT_SHUTTER
+#endif
+
+#ifdef USE_ENERGY_SENSOR
+#undef USE_ENERGY_SENSOR
+#endif
+
+#ifdef USE_MCP39F501
+#undef USE_MCP39F501
+#endif
+
+#ifdef USE_IR_REMOTE
+#undef USE_IR_REMOTE
+#endif
+
+#ifdef USE_MCP39F501
+#undef USE_MCP39F501
+#endif
+
+#ifdef USE_DEVICE_GROUPS
+#undef USE_DEVICE_GROUPS
+#endif
+
+#ifdef USE_PWM_DIMMER
+#undef USE_PWM_DIMMER
+#endif
+
+#ifdef USE_SONOFF_D1
+#undef USE_SONOFF_D1
+#endif
+
+#ifdef USE_MCP39F501
+#undef USE_MCP39F501
+#endif
+
+#ifdef USE_MCP39F501
+#undef USE_MCP39F501
+#endif
+
+#ifdef USE_WS2812
+#undef USE_WS2812
+#endif
+
 // support other sensors
-#define USE_SHT3X       // [I2cDriver15] Enable SHT3x (I2C address 0x44 or 0x45) or SHTC3 (I2C address 0x70) sensor (+0k7 code)
-#define USE_AHT2x       // [I2cDriver43] Enable AHT20/AM2301B instead of AHT1x humidity and temperature sensor (I2C address 0x38) (+0k8 code)
-#define USE_MPR121      // [I2cDriver23] Enable MPR121 controller (I2C addresses 0x5A, 0x5B, 0x5C and 0x5D) in input mode for touch buttons (+1k3 code)
-#define USE_VEML6070    // [I2cDriver12] Enable VEML6070 sensor (I2C addresses 0x38 and 0x39) (+1k5 code)
-#define USE_ADS1115     // [I2cDriver13] Enable ADS1115 16 bit A/D converter (I2C address 0x48, 0x49, 0x4A or 0x4B) based on Adafruit ADS1x15 library (no library needed) (+0k7 code)
-#define USE_INA219      // [I2cDriver14] Enable INA219 (I2C address 0x40, 0x41 0x44 or 0x45) Low voltage and current sensor (+1k code)
-
-
-#endif  // _USER_CONFIG_OVERRIDE_H_
+// #define USE_SHT3X       // [I2cDriver15] Enable SHT3x (I2C address 0x44 or 0x45) or SHTC3 (I2C address 0x70) sensor (+0k7 code)
+// #define USE_AHT2x       // [I2cDriver43] Enable AHT20/AM2301B instead of AHT1x humidity and temperature sensor (I2C address 0x38) (+0k8 code)
+// #define USE_MPR121      // [I2cDriver23] Enable MPR121 controller (I2C addresses 0x5A, 0x5B, 0x5C and 0x5D) in input mode for touch buttons (+1k3 code)
+// #define USE_VEML6070    // [I2cDriver12] Enable VEML6070 sensor (I2C addresses 0x38 and 0x39) (+1k5 code)
+// #define USE_ADS1115     // [I2cDriver13] Enable ADS1115 16 bit A/D converter (I2C address 0x48, 0x49, 0x4A or 0x4B) based on Adafruit ADS1x15 library (no library needed) (+0k7 code)
+// #define USE_INA219      // [I2cDriver14] Enable INA219 (I2C address 0x40, 0x41 0x44 or 0x45) Low voltage and current sensor (+1k code)
+/************************************************************************ */
+#ifndef USE_LORA_E32
+#define USE_LORA_E32
+#endif
+/************************************************************************ */
+#endif // _USER_CONFIG_OVERRIDE_H_

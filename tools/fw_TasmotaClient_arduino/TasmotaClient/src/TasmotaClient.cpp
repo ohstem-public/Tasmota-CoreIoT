@@ -1,8 +1,8 @@
 /*
   TasmotaClient.cpp - Library for microcontrollers enclientd by Tasmota
-  
+
   Copyright (C) 2019  Andre Thomas
-  
+
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
@@ -19,18 +19,19 @@
 
 #include <Arduino.h>
 #include <TasmotaClient.h>
-
 /*************************************************\
  * TasmotaClient shared structures
 \*************************************************/
 
-typedef union {
+typedef union
+{
   uint32_t data;
-  struct {
-    uint32_t func_json_append : 1;               // Supports FUNC_JSON_APPEND callback
-    uint32_t func_every_second : 1;              // Supports FUNC_EVERY_SECOND callback (No JSON)
-    uint32_t func_every_100_msecond : 1;         // Supports FUNC_EVERY_100_MSECOND callback (No JSON)
-    uint32_t func_client_send : 1;                // Supports FUNC_COMMAND
+  struct
+  {
+    uint32_t func_json_append : 1;       // Supports FUNC_JSON_APPEND callback
+    uint32_t func_every_second : 1;      // Supports FUNC_EVERY_SECOND callback (No JSON)
+    uint32_t func_every_100_msecond : 1; // Supports FUNC_EVERY_100_MSECOND callback (No JSON)
+    uint32_t func_client_send : 1;       // Supports FUNC_COMMAND
     uint32_t spare4 : 1;
     uint32_t spare5 : 1;
     uint32_t spare6 : 1;
@@ -66,7 +67,8 @@ typedef union {
  * Settings structure - MUST remain 4 byte aligned
 \**************************************************/
 
-struct FEATURES {
+struct FEATURES
+{
   uint32_t features_version;
   FeatureCfg features;
 } Settings;
@@ -75,7 +77,8 @@ struct FEATURES {
  * Command structure for sending/receiving commands - MUST remain 4 byte aligned
 \********************************************************************************/
 
-struct COMMAND {
+struct COMMAND
+{
   uint8_t command;
   uint8_t parameter;
   uint8_t unused2;
@@ -125,7 +128,8 @@ void TasmotaClient::sendFeatures(void)
   char buffer[sizeof(Settings)];
   memcpy(&buffer, &Settings, sizeof(Settings));
   serial->write(char(PARAM_DATA_START));
-  for (uint8_t ca = 0; ca < sizeof(buffer); ca++) {
+  for (uint8_t ca = 0; ca < sizeof(buffer); ca++)
+  {
     serial->write(char(buffer[ca]));
   }
   serial->write(char(PARAM_DATA_END));
@@ -134,7 +138,8 @@ void TasmotaClient::sendFeatures(void)
 void TasmotaClient::sendJSON(char *json)
 {
   serial->write(char(PARAM_DATA_START));
-  for (uint8_t ca = 0; ca < strlen(json); ca++) {
+  for (uint8_t ca = 0; ca < strlen(json); ca++)
+  {
     serial->write(json[ca]);
   }
   serial->write(char(PARAM_DATA_END));
@@ -167,8 +172,10 @@ void TasmotaClient::attach_FUNC_COMMAND_SEND(callbackFunc1 func)
 uint8_t TasmotaClient::waitforbytes(uint16_t num, uint16_t timeout)
 {
   uint16_t timer = 0;
-  while (timer < timeout) {
-    if (serial->available() > (int)(num-1)) {
+  while (timer < timeout)
+  {
+    if (serial->available() > (int)(num - 1))
+    {
       return 1;
     }
     delay(1);
@@ -179,9 +186,11 @@ uint8_t TasmotaClient::waitforbytes(uint16_t num, uint16_t timeout)
 
 void TasmotaClient::ProcessSend(uint8_t sz)
 {
-  if (waitforbytes(sz+2,50)) {
+  if (waitforbytes(sz + 2, 50))
+  {
     serial->read(); // read leading character
-    for (uint8_t idx = 0; idx < sz; idx++) {
+    for (uint8_t idx = 0; idx < sz; idx++)
+    {
       receive_buffer[idx] = serial->read();
     }
     serial->read(); // read trailing byte
@@ -192,56 +201,61 @@ void TasmotaClient::ProcessSend(uint8_t sz)
 
 void TasmotaClient::ProcessCommand(void)
 {
-  if (waitforbytes(sizeof(Command)+1, 100)) {
+  if (waitforbytes(sizeof(Command) + 1, 100))
+  {
     char buffer[sizeof(Command)];
-    for (uint8_t idx = 0; idx < sizeof(Command); idx++) {
+    for (uint8_t idx = 0; idx < sizeof(Command); idx++)
+    {
       buffer[idx] = serial->read();
     }
     serial->read(); // Remove end of command character
     memcpy(&Command, &buffer, sizeof(Command));
-    switch (Command.command) {
-      case CMND_FEATURES:
-        sendFeatures();
-        break;
-      case CMND_FUNC_JSON:
-        FUNC_JSON();
-        break;
-      case CMND_FUNC_EVERY_SECOND:
-        FUNC_EVERY_SECOND();
-        break;
-      case CMND_FUNC_EVERY_100_MSECOND:
-        FUNC_EVERY_100_MSECOND();
-        break;
-      case CMND_CLIENT_SEND:
-        ProcessSend(Command.parameter);
-        break;
-      default:
-        break;
+    switch (Command.command)
+    {
+    case CMND_FEATURES:
+      sendFeatures();
+      break;
+    case CMND_FUNC_JSON:
+      FUNC_JSON();
+      break;
+    case CMND_FUNC_EVERY_SECOND:
+      FUNC_EVERY_SECOND();
+      break;
+    case CMND_FUNC_EVERY_100_MSECOND:
+      FUNC_EVERY_100_MSECOND();
+      break;
+    case CMND_CLIENT_SEND:
+      ProcessSend(Command.parameter);
+      break;
+    default:
+      break;
     }
   }
 }
 
 void TasmotaClient::SendCommand(uint8_t cmnd, uint8_t param)
 {
- Command.command = cmnd;
- Command.parameter = param;
- Command.unused2 = 0;
- Command.unused3 = 0;
- uint8_t tmp[sizeof(Command)];
- memcpy(&tmp, &Command, sizeof(Command));
- serial->write(char(CMND_START));
- for (uint8_t idx = 0; idx < sizeof(Command); idx++) {
-   serial->write(tmp[idx]);
- }
- serial->write(char(CMND_END));
+  Command.command = cmnd;
+  Command.parameter = param;
+  Command.unused2 = 0;
+  Command.unused3 = 0;
+  uint8_t tmp[sizeof(Command)];
+  memcpy(&tmp, &Command, sizeof(Command));
+  serial->write(char(CMND_START));
+  for (uint8_t idx = 0; idx < sizeof(Command); idx++)
+  {
+    serial->write(tmp[idx]);
+  }
+  serial->write(char(CMND_END));
 }
 
 void TasmotaClient::SendTele(char *data)
 {
   SendCommand(CMND_PUBLISH_TELE, strlen(data));
   serial->write(char(PARAM_DATA_START));
-  for (uint8_t idx = 0; idx < strlen(data); idx++) {
-	  serial->write(data[idx]);
+  for (uint8_t idx = 0; idx < strlen(data); idx++)
+  {
+    serial->write(data[idx]);
   }
   serial->write(char(PARAM_DATA_END));
 }
@@ -250,7 +264,8 @@ void TasmotaClient::ExecuteCommand(char *cmnd)
 {
   SendCommand(CMND_EXECUTE_CMND, strlen(cmnd));
   serial->write(char(PARAM_DATA_START));
-  for (uint8_t idx = 0; idx < strlen(cmnd); idx++) {
+  for (uint8_t idx = 0; idx < strlen(cmnd); idx++)
+  {
     serial->write(cmnd[idx]);
   }
   serial->write(char(PARAM_DATA_END));
@@ -258,14 +273,16 @@ void TasmotaClient::ExecuteCommand(char *cmnd)
 
 void TasmotaClient::loop(void)
 {
-  if (serial->available()) {
+  if (serial->available())
+  {
     uint8_t cmnd = serial->read();
-    switch (cmnd) {
-      case CMND_START:
-        ProcessCommand();
-        break;
-      default:
-        break;
+    switch (cmnd)
+    {
+    case CMND_START:
+      ProcessCommand();
+      break;
+    default:
+      break;
     }
   }
 }
