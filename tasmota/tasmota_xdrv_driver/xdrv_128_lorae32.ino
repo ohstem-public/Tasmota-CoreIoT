@@ -2,7 +2,7 @@
   xdrv_128_1_lorae32.ino - LoRa E32 module integration for Tasmota
   Based on Lora E32 UART module communication
 */
-#include "user_config_override.h"
+
 #ifdef USE_LORA_E32
 
 /*********************************************************************************************\
