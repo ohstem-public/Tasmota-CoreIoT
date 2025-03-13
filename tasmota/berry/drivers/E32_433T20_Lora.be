@@ -1,10 +1,8 @@
 import json
 import string
 # List of devices to be sent via LoRa
-var selected_devices = {}
-def SayHello()
-  tasmota.cmd("Say_Hello")
-end
+var list_selected_devices = {}
+
 # Function to retrieve sensor data from Tasmota
 def getsensors()
  var sensors = json.load(tasmota.read_sensors())
@@ -13,9 +11,14 @@ def getsensors()
   for entry: sensors.keys() #check all entry in sensor data
       if type(sensors[entry]) == 'instance' #if instance list all subvalues
          for subentry: sensors[entry].keys()
-             ressen[entry+'-'+subentry] = sensors[entry][subentry]
+            ressen[entry+'-'+subentry] = sensors[entry][subentry]
          end
       end
+  end
+ end 
+ for device:ressen.keys()
+  if list_selected_devices.find(device) != nil
+   list_selected_devices[device] = ressen[device]
   end
  end
  if ressen.size()>0
@@ -29,7 +32,7 @@ end
 # Function to handle user commands (add/remove device)
 def handle_command(input_cmd)
   print("Received command: " + input_cmd)  # Debug command received
-  
+
   var parts = string.split(input_cmd, " ")
   if parts.size() < 2
     print("Invalid command format!")
@@ -51,35 +54,44 @@ def handle_command(input_cmd)
    for list_device: available_sensors.keys()
       if list_device == device  # Kiểm tra cảm biến có tồn tại không
          print("Device added to LoRa: " + device)
-         selected_devices[device] = true  # Save to LoRa device list
+         list_selected_devices[device] = available_sensors[device]  # Save to LoRa device list
          found = True
       end
    end
    if found == False
       print("Error: Device not found in available sensors!")
       print("Available sensors: " + json.dump(available_sensors))
-   end
+   end    
   elif cmd == "removeDevice"
+   var found = False
    for list_device: available_sensors.keys()
       if list_device == device  # Kiểm tra cảm biến có tồn tại không
          print("Remove to LoRa: " + device)
-         selected_devices.delete(device)  #delete
+         list_selected_devices.remove(device)  #delete
+         found = True
       end
    end
-   print("Error: Device not found in available sensors!")
-   print(json.dump(available_sensors)) 
+   if found == False
+    print("Error: Device not found in available sensors!")
+    end
   else
     print("Unknown command!")
   end
+  
 end
 
 # Function to display the list of selected devices
 def list_devices()
   print("Selected devices for LoRa transmission:")
-  for key: selected_devices.keys()
+  for key: list_selected_devices.keys()
     print("- " + key)
   end
 end
 
+def sendLoraBerry()
+    getsensors()
+    tasmota.cmd("SendLora " + json.dump(list_selected_devices))
+end
 # Automatically run every 10 seconds to fetch sensor data
-tasmota.add_cron("*/10 * * * * *", getsensors, "every_10_seconds")
+
+tasmota.add_cron("*/10 * * * * *", sendLoraBerry, "every_10_seconds")

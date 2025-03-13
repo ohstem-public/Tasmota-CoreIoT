@@ -30,26 +30,46 @@ bool AddLoginitSuccess1 = false;
     SendMQTT   - Send a MQTT example message
     Help       - Prints a list of available commands
 */
-
+char trans_data[1000];
 const char MyProjectCommands[] PROGMEM = "|" // No Prefix
                                          "Say_Hello|"
                                          "SendMQTT|"
                                          "SendData|"
                                          "Help|"
-                                         "SendLoRa";
-
+                                         "SendLoRa|"
+                                         "AddData";
 void (*const MyProjectCommand[])(void) PROGMEM = {
-    &CmdSay_Hello, &CmdSendMQTT, &CmdSendData, &CmdHelp, &CmdSendLora};
+    &CmdSay_Hello, &CmdSendMQTT, &CmdSendData, &CmdHelp,
+    &CmdSendLora, &CmdAddData};
 void CmdSay_Hello(void)
 {
     AddLog(LOG_LEVEL_INFO, PSTR("Say_Hello: Hello!"));
     ResponseCmndDone();
 }
+
+void CmdAddData(void)
+{
+    if (XdrvMailbox.data_len == 0)
+    {
+        AddLog(LOG_LEVEL_INFO, PSTR("AddData: No data provided!"));
+        ResponseCmndDone();
+        return;
+    }
+
+    // Sao chép dữ liệu JSON vào trans_data
+    strncpy(trans_data, XdrvMailbox.data, sizeof(trans_data) - 1);
+    trans_data[sizeof(trans_data) - 1] = '\0'; // Đảm bảo chuỗi kết thúc an toàn
+    // In ra nội dung JSON để debug
+    AddLog(LOG_LEVEL_INFO, PSTR("AddData received: %s"), trans_data);
+    ResponseCmndDone();
+}
+
 void CmdSendLora(void)
 {
     if (XdrvMailbox.data_len == 0)
     {
-        AddLog(LOG_LEVEL_INFO, PSTR("SendData: No data provided!"));
+        AddLog(LOG_LEVEL_INFO, PSTR("SendData: Send deivce!"));
+        ResponseStatus rs = my_lora_e32.sendMessage(trans_data);
         ResponseCmndDone();
         return;
     }

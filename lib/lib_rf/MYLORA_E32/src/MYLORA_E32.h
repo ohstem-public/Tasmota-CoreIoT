@@ -8,7 +8,7 @@
 // Định nghĩa chân sử dụng cho LoRa E32
 #define MY_LORA_RX 7 // RX của ESP32 (gắn với TX của LoRa)
 #define MY_LORA_TX 6 // TX của ESP32 (gắn với RX của LoRa)
-
+extern char trans_data[1000];
 // Khai báo đối tượng HardwareSerial (sẽ được định nghĩa trong MY_LORA_E32.cpp)
 extern HardwareSerial LoraSerial;
 

@@ -20,7 +20,6 @@
 // Biến toàn cục
 bool initSuccess = false;
 String receivedMessage;
-
 /*-----------------------------Biến cục bộ-------------------------*/
 char mess[100];
 
