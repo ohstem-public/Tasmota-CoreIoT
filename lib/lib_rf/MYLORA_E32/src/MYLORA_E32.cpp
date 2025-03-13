@@ -17,9 +17,10 @@ void configMyLoraE32(uint8_t channel, uint8_t addrHigh, uint8_t addrLow, uint8_t
     configuration.OPTION.wirelessWakeupTime = 3; // Wakeup Time mặc định
     configuration.SPED.airDataRate = 2;          // Tốc độ truyền không khí mặc định
     configuration.OPTION.fixedTransmission = 0;  // Chế độ Transparent
-    configuration.CHAN = channel;                // Kênh truyền
-    configuration.ADDH = addrHigh;               // Địa chỉ cao
-    configuration.ADDL = addrLow;                // Địa chỉ thấp
+    configuration.OPTION.ioDriveMode = 1;
+    configuration.CHAN = channel;  // Kênh truyền
+    configuration.ADDH = addrHigh; // Địa chỉ cao
+    configuration.ADDL = addrLow;  // Địa chỉ thấp
 
     // Gửi cấu hình mới đến module và lưu lại cấu hình
     my_lora_e32.setConfiguration(configuration, WRITE_CFG_PWR_DWN_SAVE);

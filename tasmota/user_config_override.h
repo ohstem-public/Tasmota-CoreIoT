@@ -242,5 +242,8 @@ Examples :
 #ifndef USE_LORA_E32
 #define USE_LORA_E32
 #endif
+#ifndef USE_BERRY_PSRAM
+#define USE_BERRY_PSRAM
+#endif
 /************************************************************************ */
 #endif // _USER_CONFIG_OVERRIDE_H_

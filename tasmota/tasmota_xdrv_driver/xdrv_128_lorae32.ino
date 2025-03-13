@@ -20,6 +20,11 @@
 // Biến toàn cục
 bool initSuccess = false;
 String receivedMessage;
+
+/*-----------------------------Biến cục bộ-------------------------*/
+char mess[100];
+
+/*-----------------------------------------------------------------*/
 void printParameters(struct Configuration configuration)
 {
   AddLog(LOG_LEVEL_INFO, PSTR("----------------------------------------"));
@@ -61,7 +66,15 @@ void printModuleInformation(struct ModuleInformation moduleInformation)
 
   AddLog(LOG_LEVEL_INFO, PSTR("----------------------------------------"));
 }
-
+struct LoraE32
+{
+  byte High_address;
+  byte LOW_address;
+  float temperature;
+  float humidity;
+  int soil;
+};
+LoraE32 lora_gateway;
 // Khởi tạo module LoRa E32
 
 void LoraE32Init()
@@ -95,16 +108,6 @@ void LoraE32Processing()
   if (!initSuccess)
     return;
 
-  // Kiểm tra có dữ liệu từ Serial
-  if (Serial.available())
-  {
-    receivedMessage = Serial.readString();
-    AddLog(LOG_LEVEL_INFO, PSTR("Mess from Transmitter: "));
-    AddLog(LOG_LEVEL_INFO, receivedMessage.c_str());
-    ResponseStatus rs = my_lora_e32.sendMessage(receivedMessage);
-    AddLog(LOG_LEVEL_INFO, rs.getResponseDescription().c_str());
-  }
-
   // Kiểm tra có tin nhắn từ LoRa
   if (my_lora_e32.available() > 1)
   {
@@ -121,6 +124,13 @@ void LoraE32Processing()
   }
 }
 
+void soilmoisture()
+{
+  int soil = analogRead(A0);
+  sprintf(mess, "Soil moisture : %d", soil);
+  AddLog(LOG_LEVEL_INFO, mess);
+  my_lora_e32.sendMessage(mess);
+}
 // Interface cho Tasmota
 bool Xdrv128(uint32_t function)
 {
@@ -145,6 +155,9 @@ bool Xdrv128(uint32_t function)
     case FUNC_EVERY_250_MSECOND:
       LoraE32Processing();
       break;
+      // case FUNC_EVERY_SECOND:
+      //   soilmoisture();
+      //   break;
       //    case FUNC_EVERY_200_MSECOND:
       //    case FUNC_EVERY_100_MSECOND:
     }
