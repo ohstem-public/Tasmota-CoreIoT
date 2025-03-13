@@ -5,7 +5,6 @@
 
   SPDX-License-Identifier: GPL-3.0-only
 */
-#include "my_user_config.h"
 #ifdef USE_DHT
 /*********************************************************************************************\
  * DHT11, AM2301 (DHT21, DHT22, AM2302, AM2321), SI7021, THS01, MS01 - Temperature and Humidity

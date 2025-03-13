@@ -3,6 +3,7 @@
   Based on Lora E32 UART module communication
 */
 #include "user_config_override.h"
+
 #ifdef USE_LORA_E32
 
 /*********************************************************************************************\
@@ -14,7 +15,6 @@
 #warning **** LoRa E32 Driver is included... ****
 
 #define XDRV_128 128 // Định danh driver trong hệ thống Tasmota
-
 #include "MYLORA_E32.h"
 #include <Arduino.h>
 // Biến toàn cục
@@ -66,16 +66,26 @@ void printModuleInformation(struct ModuleInformation moduleInformation)
 
   AddLog(LOG_LEVEL_INFO, PSTR("----------------------------------------"));
 }
-struct LoraE32
-{
-  byte High_address;
-  byte LOW_address;
-  float temperature;
-  float humidity;
-  int soil;
-};
-LoraE32 lora_gateway;
+// struct LoraE32
+// {
+//   byte High_address;
+//   byte LOW_address;
+//   float temperature;
+//   float humidity;
+//   int soil;
+// };
+// LoraE32 lora_gateway;
 // Khởi tạo module LoRa E32
+void MyCustomCommand(void)
+{
+  AddLog(LOG_LEVEL_INFO, PSTR("Custom Command Executed!"));
+  // Thực hiện hành động mong muốn ở đây
+}
+
+void RegisterMyCommands()
+{
+  // RegisterCommand("MyCommand", MyCustomCommand, true);
+}
 
 void LoraE32Init()
 {
