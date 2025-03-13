@@ -57,7 +57,7 @@
 
 // Uncomment to enable printing out nice debug messages.
 // #define LoRa_E32_DEBUG
-
+#ifndef ESP_KNX_IP_H
 // Define where debug output will be printed.
 #define DEBUG_PRINTER Serial
 // Setup debug printing macros.
@@ -79,7 +79,7 @@
 	{                      \
 	}
 #endif
-
+#endif //ESP_KNX_IP_H
 enum MODE_TYPE
 {
 	MODE_0_NORMAL = 0,
