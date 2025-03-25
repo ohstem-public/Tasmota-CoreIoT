@@ -53,8 +53,8 @@
 #include "WProgram.h"
 #endif
 
-#define MAX_SIZE_TX_PACKET 58
-
+// #define MAX_SIZE_TX_PACKET 58
+#define MAX_SIZE_TX_PACKET 256
 // Uncomment to enable printing out nice debug messages.
 // #define LoRa_E32_DEBUG
 #ifndef ESP_KNX_IP_H
