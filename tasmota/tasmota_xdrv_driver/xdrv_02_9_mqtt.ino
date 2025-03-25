@@ -711,7 +711,6 @@ void MqttDataHandler(char* mqtt_topic, uint8_t* mqtt_data, unsigned int data_len
       return;
     }
   }
-  String mqtt_dataString((char*)mqtt_data, data_len);
 #ifdef USE_MQTT_FILE
   FMqtt.topic_size = strlen(mqtt_topic);
 #endif  // USE_MQTT_FILE
@@ -762,15 +761,15 @@ void MqttDataHandler(char* mqtt_topic, uint8_t* mqtt_data, unsigned int data_len
 #ifdef USE_MQTT_TB_IOT
   String fullTopicString = String(mqtt_topic);
   mqtt_data[data_len] = 0;
+  String fullDataString = String((char*)mqtt_data, data_len);
   //printf("Full topic '%s' payload '%s'\n", fullTopicString.c_str(), mqtt_data);
-  JsonParser mqttJsonData((char*) mqtt_data);
+  JsonParser mqttJsonData((char*) mqtt_data); // [!] mqtt_data is changed
   JsonParserObject rootObject = mqttJsonData.getRootObject();
   if (!rootObject.isValid()) {
     // ignore message with non json payload
     AddLog(LOG_LEVEL_ERROR, PSTR(D_LOG_MQTT "Invalid RPC json payload %s"), (char*)mqtt_data);
     return;
   }
-
   char requestID[10];
   if (fullTopicString.startsWith("v1/devices/me/rpc/request/")) { // received server side RPC 
     // get request ID from topic (format like v1/devices/me/rpc/request/$request_id)
@@ -809,7 +808,9 @@ void MqttDataHandler(char* mqtt_topic, uint8_t* mqtt_data, unsigned int data_len
       break;
     }
   } else if ((fullTopicString == "v1/gateway/rpc")){
-    ExecuteCommand(("SendLora " + mqtt_dataString).c_str(), SRC_MQTT);
+#ifdef USE_LORA_E32_G
+    ExecuteCommand(("SendLora " + fullDataString).c_str(), SRC_MQTT);
+#endif //USE_LORA_E32_G
     return;
   }
 #endif  // USE_MQTT_TB_IOT

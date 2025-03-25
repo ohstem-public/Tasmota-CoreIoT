@@ -15,9 +15,12 @@
 #define XDRV_103 103 // Định danh driver trong hệ thống Tasmota
 #include "MYLORA_E32.h"
 #include <Arduino.h>
-// Biến toàn cục
+#define TYPE_TELEMETRY  0
+#define TYPE_ATTRIBUTE  1
+#define TYPE_RPC        2
+#define TYPE_UNKNOWN   -1
+
 bool initSuccess = false;
-String receivedMessage;
 /*-----------------------------Biến cục bộ-------------------------*/
 const char LoRaE32GatewayCommands[] PROGMEM = "|" // No Prefix
                                              "e32test|"
@@ -69,30 +72,17 @@ void printModuleInformation(struct ModuleInformation moduleInformation)
 void e32testCommand(void)
 {
   AddLog(LOG_LEVEL_INFO, PSTR("Custom Command Executed!"));
-  // Thực hiện hành động mong muốn ở đây
-  char src_topic[] = "v1/devices/me/rpc/request/3";
-  char data[] = "{\"id\":3,\"method\":\"POWER\",\"params\":false}";
-  MqttDataHandler(src_topic, (uint8_t*) data, strlen(data));
   ResponseCmndDone();
 }
 void e32testsetCommand(void)
 {
   AddLog(LOG_LEVEL_INFO, PSTR("Custom1 Command Executed!"));
-  // Thực hiện hành động mong muốn ở đây
-  char src_topic1[] = "v1/devices/me/rpc/request/4";
-  char data1[] = "{\"id\":4,\"method\":\"POWER\",\"params\":true}";
-  MqttDataHandler(src_topic1, (uint8_t*) data1, strlen(data1));
   ResponseCmndDone();
-}
-void RegisterMyCommands()
-{
-  // RegisterCommand("MyCommand", MyCustomCommand, true);
 }
 
 void LoraE32Init()
 {
   // Gọi hàm khởi tạo từ MY_LORA_E32.h
-  // AddLog(LOG_LEVEL_INFO, PSTR("Success"));
   initSuccess = true;
   my_lora_e32.begin();
   ResponseStructContainer c = my_lora_e32.getConfiguration();
@@ -113,11 +103,6 @@ void LoraE32Init()
   }
   AddLog(LOG_LEVEL_INFO, PSTR("LoRa E32: Initialized successfully"));
 }
-#define TYPE_TELEMETRY  0
-#define TYPE_ATTRIBUTE  1
-#define TYPE_RPC        2
-#define TYPE_UNKNOWN   -1
-
 int parseJsonType(String jsonStr) {
   // Convert to char
   int len = jsonStr.length() + 1;
@@ -200,20 +185,16 @@ bool Xdrv103(uint32_t function)
 
     switch (function)
     {
-      //    Select suitable interval for polling your function
+    //    Select suitable interval for polling your function
     // case FUNC_EVERY_SECOND:
-    //   AddLog(LOG_LEVEL_INFO, PSTR("EVERY SECOND"));
     //   break;
     case FUNC_EVERY_250_MSECOND:
       LoraE32Processing();
       break;
-      // case FUNC_EVERY_SECOND:
-      //   soilmoisture();
-      //   break;
       //    case FUNC_EVERY_200_MSECOND:
       //    case FUNC_EVERY_100_MSECOND:
       case FUNC_COMMAND:
-      AddLog(LOG_LEVEL_DEBUG_MORE, PSTR("Calling My Project Command..."));
+      AddLog(LOG_LEVEL_DEBUG_MORE, PSTR("Calling Lora_E32 CMD..."));
       result = DecodeCommand(LoRaE32GatewayCommands, LoRaE32GatewayCommand);
       break;
     }
