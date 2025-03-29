@@ -23,9 +23,11 @@
 bool initSuccess = false;
 /*-----------------------------Biến cục bộ-------------------------*/
 const char LoRaE32GatewayCommands[] PROGMEM = "|" // No Prefix
+                                             "SendLora|"
                                              "e32test|"
                                              "e32testset";
 void (*const LoRaE32GatewayCommand[])(void) PROGMEM = {
+    &CmdSendLora,
     &e32testCommand, &e32testsetCommand};
 /*-----------------------------------------------------------------*/
 void printParameters(struct Configuration configuration)
@@ -68,6 +70,20 @@ void printModuleInformation(struct ModuleInformation moduleInformation)
   AddLog(LOG_LEVEL_INFO, PSTR("Features : %X"), moduleInformation.features);
 
   AddLog(LOG_LEVEL_INFO, PSTR("----------------------------------------"));
+}
+void CmdSendLora(void)
+{
+    if (XdrvMailbox.data_len == 0)
+    {
+        AddLog(LOG_LEVEL_INFO, PSTR("Nothing to transmit"));
+        ResponseCmndDone();
+        return;
+    }
+    char *tran = XdrvMailbox.data;
+    AddLog(LOG_LEVEL_INFO, PSTR("Transmit data: %s"), tran);
+    ResponseStatus rs = my_lora_e32.sendMessage(tran);
+    AddLog(LOG_LEVEL_INFO, rs.getResponseDescription().c_str());
+    ResponseCmndDone();
 }
 void e32testCommand(void)
 {
