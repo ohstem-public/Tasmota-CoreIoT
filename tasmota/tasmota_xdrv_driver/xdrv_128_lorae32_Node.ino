@@ -37,15 +37,16 @@ bool AddLoginitSuccess1 = false;
 const char MyProjectCommands[] PROGMEM = "|" // No Prefix
                                          "Say_Hello|"
                                          "Help|"
-                                         "SendLoRa|"
+                                         "SendLora|"
+                                         "SendLoraTelemetry|"
                                          "SendLoraAttribute|"
                                          "SetNameLora|"
-                                         "BeginLora";
+                                         "BeginLora|"
+                                         "PrintLora";
 void (*const MyProjectCommand[])(void) PROGMEM = {
-    &CmdSay_Hello, &CmdHelp,
-    &CmdSendLora, &CmdSendLoraAttribute,&CmdSetNameLora,&CmdBeginLora
+    &CmdSay_Hello, &CmdHelp,&CmdSendLora,
+    &CmdSendLoraTelemetry, &CmdSendLoraAttribute,&CmdSetNameLora,&CmdBeginLora,&CmdPrintLora
 };
-
 void CmdHelp(void)
 {
     AddLog(LOG_LEVEL_INFO, PSTR("Help: Accepted commands "));
@@ -58,7 +59,22 @@ void CmdSay_Hello(void)
     AddLog(LOG_LEVEL_INFO, PSTR("Say_Hello: Hello!"));
     ResponseCmndDone();
 }
-
+void CmdSendLora(void){
+  if (XdrvMailbox.data_len == 0)
+  {
+      AddLog(LOG_LEVEL_INFO, PSTR("No data to transmit"));
+      ResponseCmndDone();
+      return;
+  }
+  else
+  {
+    char*data =XdrvMailbox.data;
+    AddLog(LOG_LEVEL_INFO, PSTR("Lora Transmit : %s"), data);
+    ResponseStatus rs = my_lora_e32.sendMessage(data);
+    AddLog(LOG_LEVEL_INFO, rs.getResponseDescription().c_str());
+    ResponseCmndDone();
+  }
+}
 
 void CmdSetNameLora(void){
   if(XdrvMailbox.data_len == 0){
@@ -83,8 +99,8 @@ void CmdBeginLora(void){
   else{
 
     if(doc.containsKey("channel") && doc.containsKey("addrHigh") && doc.containsKey("addrLow")){
-      int Baudrate = 3;
-      int fixedTransmission = 0;
+      uint8_t Baudrate = 3;
+      uint8_t fixedTransmission = 0;
       uint8_t channel = doc["channel"].as<uint8_t>();
       uint8_t addrHigh = doc["addrHigh"].as<uint8_t>();
       uint8_t addrLow = doc["addrLow"].as<uint8_t>();
@@ -98,7 +114,7 @@ void CmdBeginLora(void){
     }
   }
 }
-void CmdSendLora(void)
+void CmdSendLoraTelemetry(void)
 {
     if (XdrvMailbox.data_len == 0)
     {
@@ -117,7 +133,7 @@ void CmdSendLora(void)
     }
     String json_string;
     serializeJson(doc,json_string);
-    AddLog(LOG_LEVEL_INFO, PSTR("Mess from ESP32S3: %s"), json_string.c_str());
+    AddLog(LOG_LEVEL_INFO, PSTR("Lora Transmit : %s"), json_string.c_str());
     ResponseStatus rs = my_lora_e32.sendMessage(json_string);
     AddLog(LOG_LEVEL_INFO, rs.getResponseDescription().c_str());
     ResponseCmndDone();
@@ -155,16 +171,7 @@ void CmdSendData(void)
 
     ResponseCmndDone();
 }
-
-
-
-// Biến toàn cục
-bool initSuccess = false;
-String receivedMessage;
-/*-----------------------------Biến cục bộ-------------------------*/
-char mess[100];
-
-/*-----------------------------------------------------------------*/
+/*************************************** LOG DETAIL LORA ****************************************************** */
 void printParameters(struct Configuration configuration)
 {
   AddLog(LOG_LEVEL_INFO, PSTR("----------------------------------------"));
@@ -204,6 +211,24 @@ void printModuleInformation(struct ModuleInformation moduleInformation)
 
   AddLog(LOG_LEVEL_INFO, PSTR("----------------------------------------"));
 }
+void CmdPrintLora(void){
+  ResponseStructContainer c = my_lora_e32.getConfiguration();
+  Configuration configuration = *(Configuration *)c.data;
+  printParameters(configuration);
+  ResponseStructContainer cMi;
+  cMi = my_lora_e32.getModuleInformation();
+  ModuleInformation mi = *(ModuleInformation *)cMi.data;
+  printModuleInformation(mi);
+}
+/************************************************************************************************************ */
+// Biến toàn cục
+bool initSuccess = false;
+String receivedMessage;
+/*-----------------------------Biến cục bộ-------------------------*/
+char mess[100];
+
+/*-----------------------------------------------------------------*/
+
 void LoraE32Init()
 {
   // Gọi hàm khởi tạo từ MY_LORA_E32.h
@@ -220,11 +245,11 @@ void LoraE32Init()
   else
   {
     Configuration configuration = *(Configuration *)c.data;
-    printParameters(configuration);
+    // printParameters(configuration);
     ResponseStructContainer cMi;
     cMi = my_lora_e32.getModuleInformation();
     ModuleInformation mi = *(ModuleInformation *)cMi.data;
-    printModuleInformation(mi);
+    // printModuleInformation(mi);
   }
   AddLog(LOG_LEVEL_INFO, PSTR("LoRa E32: Initialized successfully"));
 }

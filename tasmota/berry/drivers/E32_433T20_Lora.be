@@ -4,8 +4,8 @@ import string
 var list_selected_devices = {}
 var lora_config = {
   "channel": 20,
-  "addrHigh": 1,
-  "addrLow": 2,
+  "addrHigh": 0x1,
+  "addrLow": 0x2,
   "Baudrate": 3,
   "fixedTransmission": 0
 }
@@ -148,7 +148,7 @@ end
 
 def sendLoraBerry()
     getsensors()
-    tasmota.cmd("SendLora " + json.dump(list_selected_devices))
+    tasmota.cmd("SendLoraTelemetry " + json.dump(list_selected_devices))
 end
 # Automatically run every 10 seconds to fetch sensor data
 

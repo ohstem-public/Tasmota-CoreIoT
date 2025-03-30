@@ -2,7 +2,7 @@
 HardwareSerial LoraSerial(1);
 LoRa_E32 my_lora_e32(MY_LORA_TX, MY_LORA_RX, &LoraSerial, UART_BPS_RATE_9600, SERIAL_8N1);
 Device_info device_info("Device A",106.76940000,10.90682000);
-void configMyLoraE32(uint8_t channel, uint8_t addrHigh, uint8_t addrLow, uint8_t baudRate, uint8_t fixedTransmission)
+void configMyLoraE32(uint8_t channel, uint8_t addrHigh, uint8_t addrLow, uint8_t baudRate,uint8_t fixedTransmission)
 {
     // Lấy cấu hình hiện tại của module
     ResponseStructContainer c = my_lora_e32.getConfiguration();
@@ -22,7 +22,7 @@ void configMyLoraE32(uint8_t channel, uint8_t addrHigh, uint8_t addrLow, uint8_t
     configuration.SPED.uartParity = 0;           // 8N1
     configuration.SPED.uartBaudRate = baudRate;  // Tốc độ baud UART
     configuration.SPED.airDataRate = 2;          // Tốc độ truyền không khí mặc định
-    configuration.OPTION.fixedTransmission = 0;  // Chế độ Transparent
+    configuration.OPTION.fixedTransmission = fixedTransmission;  // Chế độ Transparent
     configuration.OPTION.ioDriveMode = 1;
     configuration.OPTION.wirelessWakeupTime = 3; // Wakeup Time mặc định
     configuration.OPTION.fec = 1;
