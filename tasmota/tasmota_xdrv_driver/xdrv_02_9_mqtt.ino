@@ -501,6 +501,9 @@ void MqttSubscribeLib(const char *topic) {
   MqttClient.subscribe("v1/devices/me/attributes/response/+");
   MqttClient.subscribe("v1/devices/me/rpc/request/+");
   MqttClient.subscribe("v1/devices/me/rpc/response/+");
+#ifdef USE_LORA_E32_G
+  MqttClient.subscribe("v1/gateway/rpc");
+#endif
 #endif // USE_MQTT_TB_IOT
 
 #if !defined(USE_MQTT_AZURE_IOT) && !defined(USE_MQTT_TB_IOT)
@@ -640,7 +643,19 @@ bool MqttPublishLib(const char* topic, const uint8_t* payload, unsigned int plen
       // ignore other command/attribute
       return true;
     }
-  } else {
+  } else if(prefix == "gateway"){
+    if(attr == "telemetry"){
+      // AddLog(LOG_LEVEL_INFO, PSTR("TYPE_TELEMETRY"));
+      strlcpy((char*)topic, "v1/gateway/telemetry", 25);
+    }else if(attr == "attribute"){
+      // AddLog(LOG_LEVEL_INFO, PSTR("TYPE_ATTRIBUTE"));
+      strlcpy((char*)topic, "v1/gateway/attributes", 25);
+    }else if(attr == "rpc"){
+      // AddLog(LOG_LEVEL_INFO, PSTR("TYPE_RPC"));
+      strlcpy((char*)topic, "v1/gateway/rpc", 25);      
+    }
+  } 
+  else {
     // ignore all other messages
     return true;
   }
@@ -696,7 +711,6 @@ void MqttDataHandler(char* mqtt_topic, uint8_t* mqtt_data, unsigned int data_len
       return;
     }
   }
-
 #ifdef USE_MQTT_FILE
   FMqtt.topic_size = strlen(mqtt_topic);
 #endif  // USE_MQTT_FILE
@@ -747,15 +761,15 @@ void MqttDataHandler(char* mqtt_topic, uint8_t* mqtt_data, unsigned int data_len
 #ifdef USE_MQTT_TB_IOT
   String fullTopicString = String(mqtt_topic);
   mqtt_data[data_len] = 0;
+  String fullDataString = String((char*)mqtt_data, data_len);
   //printf("Full topic '%s' payload '%s'\n", fullTopicString.c_str(), mqtt_data);
-  JsonParser mqttJsonData((char*) mqtt_data);
+  JsonParser mqttJsonData((char*) mqtt_data); // [!] mqtt_data is changed
   JsonParserObject rootObject = mqttJsonData.getRootObject();
   if (!rootObject.isValid()) {
     // ignore message with non json payload
     AddLog(LOG_LEVEL_ERROR, PSTR(D_LOG_MQTT "Invalid RPC json payload %s"), (char*)mqtt_data);
     return;
   }
-
   char requestID[10];
   if (fullTopicString.startsWith("v1/devices/me/rpc/request/")) { // received server side RPC 
     // get request ID from topic (format like v1/devices/me/rpc/request/$request_id)
@@ -793,6 +807,11 @@ void MqttDataHandler(char* mqtt_topic, uint8_t* mqtt_data, unsigned int data_len
       //printf("Topic name: %s value: %s\n", topic, mqtt_data);
       break;
     }
+  } else if ((fullTopicString == "v1/gateway/rpc")){
+#ifdef USE_LORA_E32_G
+    ExecuteCommand(("SendLora " + fullDataString).c_str(), SRC_MQTT);
+#endif //USE_LORA_E32_G
+    return;
   }
 #endif  // USE_MQTT_TB_IOT
 
