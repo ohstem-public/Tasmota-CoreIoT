@@ -101,177 +101,43 @@ Examples :
 #endif
 #define APP_TIMEZONE           7
 
-// Uncomment below to compile faster with minimum features
-/*
+// support energy monitor sensors
+#define USE_HLW8012                              // Add support for HLW8012, BL0937 or HJL-01 Energy Monitor for Sonoff Pow and WolfBlitz
+#define USE_CSE7766                              // Add support for CSE7766 Energy Monitor for Sonoff S31 and Pow R2
+#define USE_PZEM004T                             // Add support for PZEM004T Energy monitor (+2k code)
+#define USE_PZEM_AC                              // Add support for PZEM014,016 Energy monitor (+1k1 code)
+#define USE_PZEM_DC                              // Add support for PZEM003,017 Energy monitor (+1k1 code)
 
-#ifdef USE_IMPROV
-#undef USE_IMPROV
+#ifdef ESP8266
+  #ifdef USE_IR_REMOTE
+  #undef  USE_IR_REMOTE
+  #endif
 #endif
 
-#ifdef USE_DOMOTICZ
-#undef USE_DOMOTICZ
-#endif
-
-#ifdef USE_TASMOTA_DISCOVERY
-#undef USE_TASMOTA_DISCOVERY
-#endif
-
-#ifdef ROTARY_V1
-#undef ROTARY_V1
-#endif
-
-#ifdef USE_SONOFF_RF
-#undef USE_SONOFF_RF
-#endif
-
-#ifdef USE_SONOFF_SC
-#undef USE_SONOFF_SC
-#endif
-
-#ifdef USE_ARMTRONIX_DIMMERS
-#undef USE_ARMTRONIX_DIMMERS
-#endif
-
-#ifdef USE_SONOFF_IFAN
-#undef USE_SONOFF_IFAN
-#endif
-
-#ifdef USE_BUZZER
-#undef USE_BUZZER
-#endif
-
-#ifdef USE_ARILUX_RF
-#undef USE_ARILUX_RF
-#endif
-
-#ifdef USE_DEEPSLEEP
-#undef USE_DEEPSLEEP
-#endif
-
-#ifdef USE_EXS_DIMMER
-#undef USE_EXS_DIMMER
-#endif
-
-#ifdef USE_BERRY
-#undef USE_BERRY
-#endif
-
-#ifdef USE_CSE7761
-#undef USE_CSE7761
-#endif
-
-#ifdef USE_LVGL
-#undef USE_LVGL
-#endif
-
-#ifdef USE_TIMERS
-#undef USE_TIMERS
-#endif
-
-#ifdef USE_RULES
-#undef USE_CUSE_RULESSE7761
-#endif
-
-#ifdef USE_TUYA_MCU
-#undef USE_TUYA_MCU
-#endif
-
-#ifdef USE_PS_16_DZ
-#undef USE_PS_16_DZ
-#endif
-
-#ifdef USE_SHUTTER
-#undef USE_SHUTTER
-#endif
-
-#ifdef USE_SHELLY_DIMMER
-#undef USE_SHELLY_DIMMER
-#endif
-
-#ifdef USE_LIGHT_VIRTUAL_CT
-#undef USEUSE_LIGHT_VIRTUAL_CT_SHUTTER
-#endif
-
-#ifdef USE_ENERGY_SENSOR
-#undef USE_ENERGY_SENSOR
-#endif
-
-#ifdef USE_MCP39F501
-#undef USE_MCP39F501
-#endif
-
-#ifdef USE_IR_REMOTE
-#undef USE_IR_REMOTE
-#endif
-
-#ifdef USE_MCP39F501
-#undef USE_MCP39F501
-#endif
-
-#ifdef USE_DEVICE_GROUPS
-#undef USE_DEVICE_GROUPS
-#endif
-
-#ifdef USE_PWM_DIMMER
-#undef USE_PWM_DIMMER
-#endif
-
-#ifdef USE_SONOFF_D1
-#undef USE_SONOFF_D1
-#endif
-
-#ifdef USE_MCP39F501
-#undef USE_MCP39F501
-#endif
-
-#ifdef USE_MCP39F501
-#undef USE_MCP39F501
-#endif
-
-#ifdef USE_WS2812
-#undef USE_WS2812
-#endif
-
-#ifdef USE_VEML6070
-#undef USE_VEML6070
-#endif
-
-#define USE_AHT2x 
-*/
-
-// support other sensors
-//#define USE_SHT3X       // [I2cDriver15] Enable SHT3x (I2C address 0x44 or 0x45) or SHTC3 (I2C address 0x70) sensor (+0k7 code)
-//#define USE_AHT2x       // [I2cDriver43] Enable AHT20/AM2301B instead of AHT1x humidity and temperature sensor (I2C address 0x38) (+0k8 code)
-//#define USE_MPR121      // [I2cDriver23] Enable MPR121 controller (I2C addresses 0x5A, 0x5B, 0x5C and 0x5D) in input mode for touch buttons (+1k3 code)
-//#define USE_VEML6070    // [I2cDriver12] Enable VEML6070 sensor (I2C addresses 0x38 and 0x39) (+1k5 code)
-//#define USE_ADS1115     // [I2cDriver13] Enable ADS1115 16 bit A/D converter (I2C address 0x48, 0x49, 0x4A or 0x4B) based on Adafruit ADS1x15 library (no library needed) (+0k7 code)
-//#define USE_INA219      // [I2cDriver14] Enable INA219 (I2C address 0x40, 0x41 0x44 or 0x45) Low voltage and current sensor (+1k code)
-
-
-#define USE_I2C
+#ifdef ESP32
   #define USE_SHT                                // [I2cDriver8] Enable SHT1X sensor (+1k4 code)
-//  #define USE_HTU                                // [I2cDriver9] Enable HTU21/SI7013/SI7020/SI7021 sensor (I2C address 0x40) (+1k5 code)
-//  #define USE_BMP                                // [I2cDriver10] Enable BMP085/BMP180/BMP280/BME280 sensors (I2C addresses 0x76 and 0x77) (+4k4 code)
-//    #define USE_BME68X                           // Enable support for BME680/BME688 sensor using Bosch BME68x library (+6k9 code)
+    #define USE_HTU                                // [I2cDriver9] Enable HTU21/SI7013/SI7020/SI7021 sensor (I2C address 0x40) (+1k5 code)
+  #define USE_BMP                                // [I2cDriver10] Enable BMP085/BMP180/BMP280/BME280 sensors (I2C addresses 0x76 and 0x77) (+4k4 code)
+    #define USE_BME68X                           // Enable support for BME680/BME688 sensor using Bosch BME68x library (+6k9 code)
   #define USE_BH1750                             // [I2cDriver11] Enable BH1750 sensor (I2C address 0x23 or 0x5C) (+0k5 code)
     #define USE_VEML6070                           // [I2cDriver12] Enable VEML6070 sensor (I2C addresses 0x38 and 0x39) (+1k5 code)
     #define USE_VEML6070_RSET    270000          // VEML6070, Rset in Ohm used on PCB board, default 270K = 270000ohm, range for this sensor: 220K ... 1Meg
     #define USE_VEML6070_SHOW_RAW                // VEML6070, shows the raw value of UV-A
     #define USE_ADS1115                            // [I2cDriver13] Enable ADS1115 16 bit A/D converter (I2C address 0x48, 0x49, 0x4A or 0x4B) based on Adafruit ADS1x15 library (no library needed) (+0k7 code)
     #define USE_INA219                             // [I2cDriver14] Enable INA219 (I2C address 0x40, 0x41 0x44 or 0x45) Low voltage and current sensor (+1k code)
-  //  #define INA219_SHUNT_RESISTOR (0.100)        // 0.1 Ohm default shunt resistor, can be overriden in user_config_override or using Sensor13
-//  #define USE_INA226                             // [I2cDriver35] Enable INA226 (I2C address 0x40, 0x41 0x44 or 0x45) Low voltage and current sensor (+2k3 code)
-    #define USE_SHT3X                              // [I2cDriver15] Enable SHT3x (I2C address 0x44 or 0x45) or SHTC3 (I2C address 0x70) sensor (+0k7 code)
+  #define INA219_SHUNT_RESISTOR (0.100)        // 0.1 Ohm default shunt resistor, can be overriden in user_config_override or using Sensor13
+  #define USE_INA226                             // [I2cDriver35] Enable INA226 (I2C address 0x40, 0x41 0x44 or 0x45) Low voltage and current sensor (+2k3 code)
+  #define USE_SHT3X                              // [I2cDriver15] Enable SHT3x (I2C address 0x44 or 0x45) or SHTC3 (I2C address 0x70) sensor (+0k7 code)
 //  #define USE_TSL2561                            // [I2cDriver16] Enable TSL2561 sensor (I2C address 0x29, 0x39 or 0x49) using library Joba_Tsl2561 (+2k3 code)
 //  #define USE_TSL2591                            // [I2cDriver40] Enable TSL2591 sensor (I2C address 0x29) using library Adafruit_TSL2591 (+1k6 code)
 //  #define USE_MGS                                // [I2cDriver17] Enable Xadow and Grove Mutichannel Gas sensor using library Multichannel_Gas_Sensor (+10k code)
     #define MGS_SENSOR_ADDR    0x04              // Default Mutichannel Gas sensor i2c address
-//  #define USE_SGP30                              // [I2cDriver18] Enable SGP30 sensor (I2C address 0x58) (+1k1 code)
-//  #define USE_SGP40                              // [I2cDriver69] Enable SGP40 sensor (I2C address 0x59) (+1k4 code)
-//  #define USE_SGP4X                              // [I2cDriver82] Enable SGP41 sensor (I2C address 0x59) (+7k2 code)
+  #define USE_SGP30                              // [I2cDriver18] Enable SGP30 sensor (I2C address 0x58) (+1k1 code)
+  #define USE_SGP40                              // [I2cDriver69] Enable SGP40 sensor (I2C address 0x59) (+1k4 code)
+  #define USE_SGP4X                              // [I2cDriver82] Enable SGP41 sensor (I2C address 0x59) (+7k2 code)
 //  #define USE_SEN5X                              // [I2cDriver76] Enable SEN5X sensor (I2C address 0x69) (+3k code)
 //  #define USE_SI1145                             // [I2cDriver19] Enable SI1145/46/47 sensor (I2C address 0x60) (+1k code)
-//  #define USE_LM75AD                             // [I2cDriver20] Enable LM75AD sensor (I2C addresses 0x48 - 0x4F) (+0k5 code)
+  #define USE_LM75AD                             // [I2cDriver20] Enable LM75AD sensor (I2C addresses 0x48 - 0x4F) (+0k5 code)
 //  #define USE_APDS9960                           // [I2cDriver21] Enable APDS9960 Proximity Sensor (I2C address 0x39). Disables SHT and VEML6070 (+4k7 code)
     #define USE_APDS9960_GESTURE                   // Enable APDS9960 Gesture feature (+2k code)
     #define USE_APDS9960_PROXIMITY                 // Enable APDS9960 Proximity feature (>50 code)
@@ -301,14 +167,14 @@ Examples :
       #define USE_MPU6050_DMP                      // Enable in MPU6050 to use the DMP on the chip, should create better results (+8k6 of code)
 //  #define USE_MGC3130                            // [I2cDriver27] Enable MGC3130 Electric Field Effect Sensor (I2C address 0x42) (+2k7 code, 0k3 mem)
 //  #define USE_MAX44009                           // [I2cDriver28] Enable MAX44009 Ambient Light sensor (I2C addresses 0x4A and 0x4B) (+0k8 code)
-//  #define USE_SCD30                              // [I2cDriver29] Enable Sensiron SCd30 CO2 sensor (I2C address 0x61) (+3k3 code)
-//  #define USE_SCD40                              // [I2cDriver62] Enable Sensiron SCd40/Scd41 CO2 sensor (I2C address 0x62) (+3k5 code)
-//  #define USE_SPS30                              // [I2cDriver30] Enable Sensiron SPS30 particle sensor (I2C address 0x69) (+1.7 code)
+  #define USE_SCD30                              // [I2cDriver29] Enable Sensiron SCd30 CO2 sensor (I2C address 0x61) (+3k3 code)
+  #define USE_SCD40                              // [I2cDriver62] Enable Sensiron SCd40/Scd41 CO2 sensor (I2C address 0x62) (+3k5 code)
+  #define USE_SPS30                              // [I2cDriver30] Enable Sensiron SPS30 particle sensor (I2C address 0x69) (+1.7 code)
 //  #define USE_ADE7880                            // [I2cDriver65] Enable ADE7880 Energy monitor as used on Shelly 3EM (I2C address 0x38) (+3k8)
-  #define USE_ADE7953                            // [I2cDriver7] Enable ADE7953 Energy monitor as used on Shelly 2.5 (I2C address 0x38) (+1k5)
-    #define USE_VL53L0X                            // [I2cDriver31] Enable VL53L0x time of flight sensor (I2C address 0x29) (+4k code)
+//  #define USE_ADE7953                            // [I2cDriver7] Enable ADE7953 Energy monitor as used on Shelly 2.5 (I2C address 0x38) (+1k5)
+  #define USE_VL53L0X                            // [I2cDriver31] Enable VL53L0x time of flight sensor (I2C address 0x29) (+4k code)
 //    #define VL53L0X_XSHUT_ADDRESS 0x78           //   VL53L0X base address when used with XSHUT control
-//  #define USE_VL53L1X                            // [I2cDriver54] Enable VL53L1X time of flight sensor (I2C address 0x29) using Pololu VL53L1X library (+2k9 code)
+  #define USE_VL53L1X                            // [I2cDriver54] Enable VL53L1X time of flight sensor (I2C address 0x29) using Pololu VL53L1X library (+2k9 code)
 //    #define VL53L1X_XSHUT_ADDRESS 0x78           //   VL53L1X base address when used with XSHUT control
 //    #define VL53L1X_DISTANCE_MODE Long           //   VL53L1X distance mode : Long | Medium | Short
 //  #define USE_TOF10120                           // [I2cDriver57] Enable TOF10120 time of flight sensor (I2C address 0x52) (+0k6 code)
@@ -341,6 +207,6 @@ Examples :
     #define USE_DISPLAY                            // Add I2C/TM1637/MAX7219 Display Support (+2k code)
     #define USE_DISPLAY_MODES1TO5                // Enable display mode 1 to 5 in addition to mode 0
     #define USE_DISPLAY_LCD                      // [DisplayModel 1] [I2cDriver3] Enable Lcd display (I2C addresses 0x27 and 0x3F) (+6k code)
-    // REMOVED - #define USE_DISPLAY_SSD1306                  // [DisplayModel 2] [I2cDriver4] Enable SSD1306 Oled 128x64 display (I2C addresses 0x3C and 0x3D) (+16k code)
+#endif
 
 #endif  // _USER_CONFIG_OVERRIDE_H_

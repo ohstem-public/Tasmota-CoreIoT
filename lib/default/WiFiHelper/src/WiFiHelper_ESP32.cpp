@@ -46,6 +46,9 @@ wl_status_t WiFiHelper::begin(const char *wpa2_ssid, wpa2_auth_method_t method, 
 wl_status_t WiFiHelper::begin(const char* ssid, const char *passphrase, int32_t channel, const uint8_t* bssid, bool connect) {
   WiFiHelper::scrubDNS();
   wl_status_t ret = WiFi.begin(ssid, passphrase, channel, bssid, connect);
+  #ifdef ESP32C3
+  WiFi.setTxPower(WIFI_POWER_8_5dBm);
+  #endif
   WiFiHelper::scrubDNS();
   return ret;
 }
@@ -53,12 +56,18 @@ wl_status_t WiFiHelper::begin(const char* ssid, const char *passphrase, int32_t 
 wl_status_t WiFiHelper::begin(char* ssid, char *passphrase, int32_t channel, const uint8_t* bssid, bool connect) {
   WiFiHelper::scrubDNS();
   wl_status_t ret = WiFi.begin(ssid, passphrase, channel, bssid, connect);
+  #ifdef ESP32C3
+  WiFi.setTxPower(WIFI_POWER_8_5dBm);
+  #endif
   WiFiHelper::scrubDNS();
   return ret;
 }
 wl_status_t WiFiHelper::begin() {
   WiFiHelper::scrubDNS();
   wl_status_t ret = WiFi.begin();
+  #ifdef ESP32C3
+  WiFi.setTxPower(WIFI_POWER_8_5dBm);
+  #endif
   WiFiHelper::scrubDNS();
   return ret;
 }
