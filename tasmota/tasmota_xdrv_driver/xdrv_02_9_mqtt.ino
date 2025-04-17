@@ -605,20 +605,37 @@ bool MqttPublishLib(const char* topic, const uint8_t* payload, unsigned int plen
                   continue;
                 }
                 if (firstKey) {
-                  snprintf_P(sensorInfo, sizeof(sensorInfo), PSTR("\"%s-%s-%s\":%s"), sensorName, subsensorKey, subsensor2Key.getStr(), subsensor.getStr());
+                  if (subsensor.isNum() || subsensor.isBool()) {
+                    snprintf_P(sensorInfo, sizeof(sensorInfo), PSTR("\"%s-%s-%s\":%s"), sensorName, subsensorKey, subsensor2Key.getStr(), subsensor.getStr());
+                  } else {
+                    snprintf_P(sensorInfo, sizeof(sensorInfo), PSTR("\"%s-%s-%s\":\"%s\""), sensorName, subsensorKey, subsensor2Key.getStr(), subsensor.getStr());
+                  }
                   firstKey = false;
                 } else {
-                  snprintf_P(sensorInfo, sizeof(sensorInfo), PSTR(", \"%s-%s-%s\":%s"), sensorName, subsensorKey, subsensor2Key.getStr(), subsensor.getStr());
+                  if (subsensor.isNum() || subsensor.isBool()) {
+                    snprintf_P(sensorInfo, sizeof(sensorInfo), PSTR(", \"%s-%s-%s\":%s"), sensorName, subsensorKey, subsensor2Key.getStr(), subsensor.getStr());
+                  } else {
+                    snprintf_P(sensorInfo, sizeof(sensorInfo), PSTR(", \"%s-%s-%s\":\"%s\""), sensorName, subsensorKey, subsensor2Key.getStr(), subsensor.getStr());
+                  }
+                  
                 }
                 newPayload += String(sensorInfo);
               }
             } else {
               char sensorInfo[100];
               if (firstKey) {
-                snprintf_P(sensorInfo, sizeof(sensorInfo), PSTR("\"%s-%s\":%s"), sensorName, subsensorKey, subsensor.getStr());
+                if (subsensor.isNum() || subsensor.isBool()) {
+                  snprintf_P(sensorInfo, sizeof(sensorInfo), PSTR("\"%s-%s\":%s"), sensorName, subsensorKey, subsensor.getStr());
+                } else {
+                  snprintf_P(sensorInfo, sizeof(sensorInfo), PSTR("\"%s-%s\":\"%s\""), sensorName, subsensorKey, subsensor.getStr());
+                }
                 firstKey = false;
               } else {
-                snprintf_P(sensorInfo, sizeof(sensorInfo), PSTR(", \"%s-%s\":%s"), sensorName, subsensorKey, subsensor.getStr());
+                if (subsensor.isNum() || subsensor.isBool()) {
+                  snprintf_P(sensorInfo, sizeof(sensorInfo), PSTR(", \"%s-%s\":%s"), sensorName, subsensorKey, subsensor.getStr());
+                } else {
+                  snprintf_P(sensorInfo, sizeof(sensorInfo), PSTR(", \"%s-%s\":\"%s\""), sensorName, subsensorKey, subsensor.getStr());
+                }
               }
               newPayload += String(sensorInfo);
             }
